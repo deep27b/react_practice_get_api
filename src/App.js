@@ -1,25 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import { fetchData } from "./serviceApi";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+  const [data, setData]= useState(null);
+  const [city, setCity]= useState("London");
+
+   useEffect(() => {
+    
+    const fetchweatherdata = async () => {
+        const wdata = await fetchData(city);
+        setData(wdata);
+        
+    };
+      fetchweatherdata();
+  }, [city]);
+
+   const enterKeyPressed = (e) => {
+      if(e.keyCode === 13)
+      {
+        const nCity = e.currentTarget.value;
+        setCity(nCity);
+        e.currentTarget.blur();
+        console.log(city);
+      }
+   };
+    return ( <div>
+    {data ? (
+      <div>
+        <input  onKeyDown={enterKeyPressed} type="text" name="city" placeholder= "Enter  City.." />
+        <p>{data.name}</p>
+        <p>{data.country} 
+        <p>{data.temp}</p></p>
+      </div>
+    ) : (
+      <p>Loading...</p>
+    )}
+  </div> );
 }
 
 export default App;
